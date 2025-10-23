@@ -275,6 +275,7 @@ export const FilterField: React.FC<FilterFieldProps> = ({
       /** RangeSliders should be considered off if both values are min and max */
       if (
         value &&
+        Array.isArray(value) &&
         (value[0] !== filterProps.min || value[1] !== filterProps.max)
       ) {
         handleCancelFilter();
