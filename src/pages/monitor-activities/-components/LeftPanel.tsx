@@ -1,4 +1,4 @@
-import { Box, Stack, Typography } from '@mui/material';
+import { Box, Stack, Typography, useTheme } from '@mui/material';
 import React from 'react';
 import { cleanPath } from '../../../utils/queryParams.utils';
 import { ImageWrapper } from '../../../components/ImageWrapper';
@@ -11,6 +11,8 @@ interface LeftPanelProps {
 }
 
 export const LeftPanel: React.FC<LeftPanelProps> = ({ filterConfigs }) => {
+  const theme = useTheme();
+
   // FiltersPanel requires onClose prop, but we don't need close functionality
   // in the left panel since filters are always visible
   const handleClose = () => {
@@ -20,7 +22,7 @@ export const LeftPanel: React.FC<LeftPanelProps> = ({ filterConfigs }) => {
   return (
     <Box
       sx={{
-        width: '350px',
+        width: theme.layout.filterPanelWidth,
         height: '100vh',
         position: 'sticky',
         top: 0,

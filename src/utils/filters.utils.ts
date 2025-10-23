@@ -34,6 +34,28 @@ export const filterByDataFilters = (
         let match = false;
         if (include === true) {
           switch (filterOperatorMap[f.field]) {
+            case 'equals': {
+              // Special handling for status field
+              if (f.field === 'status') {
+                if (f.value === 'active') {
+                  // "active" means show all rows that are not "done"
+                  if (d[f.field] !== 'done') {
+                    match = true;
+                  }
+                } else if (f.value === 'done') {
+                  // "done" means show only "done" rows
+                  if (d[f.field] === 'done') {
+                    match = true;
+                  }
+                }
+              } else {
+                // Default equals behavior for other fields
+                if (d[f.field] === f.value) {
+                  match = true;
+                }
+              }
+              break;
+            }
             case 'contains': {
               if (d[f.field].indexOf(f.value) > -1) {
                 match = true;

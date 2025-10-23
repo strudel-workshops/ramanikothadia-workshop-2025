@@ -1,12 +1,30 @@
 import { createTheme } from '@mui/material';
 import type {} from '@mui/x-data-grid/themeAugmentation';
 
+// Extend the Theme interface to include custom properties
+declare module '@mui/material/styles' {
+  interface Theme {
+    layout: {
+      filterPanelWidth: string;
+    };
+  }
+  interface ThemeOptions {
+    layout?: {
+      filterPanelWidth?: string;
+    };
+  }
+}
+
 /**
  * MUI Theme object for setting app-wide and component-wide styles.
  * Specify colors, spacing, fonts, and more.
  * Learn more about theme options: https://mui.com/material-ui/customization/theming/
  */
 export const theme = createTheme({
+  // Custom layout configuration
+  layout: {
+    filterPanelWidth: '280px',
+  },
   // Color palette to use throughout the app
   palette: {
     mode: 'light',

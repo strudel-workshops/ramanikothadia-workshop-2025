@@ -25,7 +25,7 @@ const filterConfigs: FilterConfig[] = [
     field: 'site',
     label: 'Site',
     operator: 'contains-one-of',
-    filterComponent: 'CheckboxList',
+    filterComponent: 'MultiSelectDropdown',
     filterProps: {
       options: [
         { label: 'Crux', value: 'crux' },
@@ -39,6 +39,7 @@ const filterConfigs: FilterConfig[] = [
         { label: 'Tahoma', value: 'tahoma' },
         { label: 'Any', value: 'any' },
       ],
+      placeholder: 'Select sites...',
     },
   },
   {
@@ -54,21 +55,22 @@ const filterConfigs: FilterConfig[] = [
   {
     field: 'status',
     label: 'Status',
-    operator: 'contains-one-of',
-    filterComponent: 'CheckboxList',
+    operator: 'equals',
+    filterComponent: 'SingleSelectDropdown',
     filterProps: {
       options: [
         { label: 'Active', value: 'active' },
         { label: 'Done', value: 'done' },
         { label: 'Any', value: 'any' },
       ],
+      placeholder: 'Select status...',
     },
   },
   {
     field: 'cromwell_result',
     label: 'Result',
     operator: 'contains-one-of',
-    filterComponent: 'CheckboxList',
+    filterComponent: 'MultiSelectDropdown',
     filterProps: {
       options: [
         { label: 'Succeeded', value: 'succeeded' },
@@ -76,6 +78,7 @@ const filterConfigs: FilterConfig[] = [
         { label: 'Cancelled', value: 'cancelled' },
         { label: 'Any', value: 'any' },
       ],
+      placeholder: 'Select results...',
     },
   },
 ];

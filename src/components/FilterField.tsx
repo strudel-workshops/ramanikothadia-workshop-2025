@@ -10,6 +10,8 @@ import {
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 import { CheckboxList } from './CheckboxList';
 import { RangeSlider } from './RangeSlider';
+import { MultiSelectDropdown } from './MultiSelectDropdown';
+import { SingleSelectDropdown } from './SingleSelectDropdown';
 import { DatePicker } from '@mui/x-date-pickers';
 import { useFilters } from './FilterContext';
 import {
@@ -67,6 +69,12 @@ export const FilterField: React.FC<FilterFieldProps> = ({
   const handleCancelFilter = () => {
     switch (filterComponent) {
       case 'CheckboxList':
+        setValue(null);
+        break;
+      case 'MultiSelectDropdown':
+        setValue(null);
+        break;
+      case 'SingleSelectDropdown':
         setValue(null);
         break;
       case 'RangeSlider':
@@ -196,6 +204,36 @@ export const FilterField: React.FC<FilterFieldProps> = ({
               }
             />
           </Stack>
+        );
+      }
+      case 'MultiSelectDropdown': {
+        return (
+          <MultiSelectDropdown
+            values={value as string[] | number[] | null}
+            options={filterProps.options}
+            onChange={(values) =>
+              dispatch({
+                type: 'SET_FILTER',
+                payload: { field: field, value: values, operator },
+              })
+            }
+            {...filterProps}
+          />
+        );
+      }
+      case 'SingleSelectDropdown': {
+        return (
+          <SingleSelectDropdown
+            value={value as string | number | null}
+            options={filterProps.options}
+            onChange={(val) =>
+              dispatch({
+                type: 'SET_FILTER',
+                payload: { field: field, value: val, operator },
+              })
+            }
+            {...filterProps}
+          />
         );
       }
       case 'TextField': {

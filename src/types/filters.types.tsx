@@ -12,7 +12,9 @@ export type FilterComponent =
   | 'RangeSlider'
   | 'CheckboxList'
   | 'DateRange'
-  | 'TextField';
+  | 'TextField'
+  | 'MultiSelectDropdown'
+  | 'SingleSelectDropdown';
 
 /**
  * The type of the value should be dependent on the filterComponent
@@ -21,11 +23,15 @@ export type FilterValue<T> = T extends 'RangeSlider'
   ? number[]
   : T extends 'CheckboxList'
     ? string[] | number[] | null
-    : T extends 'DateRange'
-      ? [Date | null, Date | null]
-      : T extends 'TextField'
-        ? string | null
-        : never;
+    : T extends 'MultiSelectDropdown'
+      ? string[] | number[] | null
+      : T extends 'SingleSelectDropdown'
+        ? string | number | null
+        : T extends 'DateRange'
+          ? [Date | null, Date | null]
+          : T extends 'TextField'
+            ? string | null
+            : never;
 
 export interface DataFilter {
   field: string;
