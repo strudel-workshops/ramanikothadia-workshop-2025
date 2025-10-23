@@ -4,6 +4,7 @@ import {
   Link,
   Paper,
   Stack,
+  TextField,
   Typography,
 } from '@mui/material';
 import HomeIcon from '@mui/icons-material/Home';
@@ -105,9 +106,17 @@ function ActivityList() {
             flexDirection: 'column',
           }}
         >
-          {/* Breadcrumbs */}
+          {/* Breadcrumbs and Search */}
           <Box
-            sx={{ p: 2, borderBottom: '1px solid', borderColor: 'grey.300' }}
+            sx={{
+              p: 2,
+              borderBottom: '1px solid',
+              borderColor: 'grey.300',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              gap: 2,
+            }}
           >
             <Breadcrumbs aria-label="breadcrumb">
               <Link underline="hover" color="inherit" href="/">
@@ -118,6 +127,14 @@ function ActivityList() {
               </Link>
               <Typography color="text.primary">Monitor Activities</Typography>
             </Breadcrumbs>
+            <TextField
+              variant="outlined"
+              label="Search"
+              size="small"
+              value={searchTerm}
+              onChange={(evt) => setSearchTerm(evt.target.value)}
+              sx={{ minWidth: 250 }}
+            />
           </Box>
 
           {/* Main Content Area */}
@@ -131,8 +148,6 @@ function ActivityList() {
             }}
           >
             <ActivityViewHeader
-              searchTerm={searchTerm}
-              setSearchTerm={setSearchTerm}
               onToggleFiltersPanel={() => {}} // No-op since filters are always visible
             />
             <Box sx={{ flex: 1, minHeight: 0 }}>
