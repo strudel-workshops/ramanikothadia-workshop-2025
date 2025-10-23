@@ -1,4 +1,4 @@
-import { Container, Paper, Stack, Typography } from '@mui/material';
+import { Container, Paper, Stack } from '@mui/material';
 import { DataGrid, GridColDef, GridComparatorFn } from '@mui/x-data-grid';
 import dayjs from 'dayjs';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
@@ -54,15 +54,6 @@ function ActivityList() {
       }}
     >
       <Stack>
-        <Stack
-          direction="row"
-          justifyContent="space-between"
-          alignItems="center"
-        >
-          <Typography variant="h6" component="h1">
-            Experiments test
-          </Typography>
-        </Stack>
         <Paper>
           <DataGrid
             rows={experiments || []}
