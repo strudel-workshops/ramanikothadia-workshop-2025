@@ -1,28 +1,15 @@
-import { Box, Stack } from '@mui/material';
-import { createRootRoute, Outlet } from '@tanstack/react-router';
-import { TopBar } from '../components/TopBar';
+import * as React from 'react'
+import { Outlet, createRootRoute } from '@tanstack/react-router'
 
-/**
- * Basic layout with navbar and footer
- */
 export const Route = createRootRoute({
-  component: () => (
-    <Stack
-      spacing={0}
-      sx={{
-        height: '100%',
-      }}
-    >
-      <TopBar />
-      <Box
-        component="main"
-        sx={{
-          flex: 1,
-          paddingBottom: 4,
-        }}
-      >
-        <Outlet />
-      </Box>
-    </Stack>
-  ),
-});
+  component: RootComponent,
+})
+
+function RootComponent() {
+  return (
+    <React.Fragment>
+      <div>Hello "__root"!</div>
+      <Outlet />
+    </React.Fragment>
+  )
+}
