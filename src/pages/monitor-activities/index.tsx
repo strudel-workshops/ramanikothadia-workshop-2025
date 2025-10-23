@@ -1,77 +1,118 @@
-import { Container, Paper, Stack } from '@mui/material';
-import { DataGrid, GridColDef, GridComparatorFn } from '@mui/x-data-grid';
-import dayjs from 'dayjs';
-import { createFileRoute, useNavigate } from '@tanstack/react-router';
-import { useDataFromSource } from '../../hooks/useDataFromSource';
+import { Box, Paper, Stack } from '@mui/material';
+import { createFileRoute } from '@tanstack/react-router';
+import { useState } from 'react';
+import { FilterContext } from '../../components/FilterContext';
+import { PageHeader } from '../../components/PageHeader';
+import { ActivityView } from './-components/ActivityView';
+import { ActivityViewHeader } from './-components/ActivityViewHeader';
+import { FiltersPanel } from './-components/FiltersPanel';
+import { FilterConfig } from '../../types/filters.types';
 
 export const Route = createFileRoute('/monitor-activities/')({
   component: ActivityList,
 });
 
-const dateComparator: GridComparatorFn<string> = (v1, v2) => {
-  return dayjs(v1).isAfter(dayjs(v2)) ? 1 : 0;
-};
-
-// CUSTOMIZE: list view table columns
-const columns: GridColDef[] = [
-  {
-    field: 'experiment_name',
-    headerName: 'Experiment Name',
-    width: 200,
-  },
-  {
-    field: 'start_time',
-    headerName: 'Start Time',
-    sortComparator: dateComparator,
-    width: 200,
-  },
-  {
-    field: 'end_time',
-    headerName: 'End Time',
-    width: 200,
-  },
+// Filter definitions for the monitor activities task flow
+const filterConfigs: FilterConfig[] = [
   {
     field: 'status',
-    headerName: 'Status',
-    width: 200,
+    label: 'Status',
+    operator: 'contains-one-of',
+    filterComponent: 'CheckboxList',
+    filterProps: {
+      options: [
+        {
+          label: 'Running',
+          value: 'Running',
+        },
+        {
+          label: 'Complete',
+          value: 'Complete',
+        },
+        {
+          label: 'Interrupted',
+          value: 'Interrupted',
+        },
+        {
+          label: 'Failed',
+          value: 'Failed',
+        },
+      ],
+    },
+  },
+  {
+    field: 'experiment_name',
+    label: 'Experiment Name',
+    operator: 'contains',
+    filterComponent: 'TextField',
+    filterProps: {
+      placeholder: 'Filter by name...',
+    },
   },
 ];
 
 /**
- * List view of all activities in the monitor-activites Task Flow.
+ * List view of all activities in the monitor-activities Task Flow.
+ * This page includes the page header, filters panel, and main table.
  */
 function ActivityList() {
-  // CUSTOMIZE: list view data source
-  const experiments = useDataFromSource('dummy-data/experiments.json');
-  const navigate = useNavigate();
+  const [searchTerm, setSearchTerm] = useState('');
+  const [showFiltersPanel, setShowFiltersPanel] = useState(true);
+
+  const handleCloseFilters = () => {
+    setShowFiltersPanel(false);
+  };
+
+  const handleToggleFilters = () => {
+    setShowFiltersPanel(!showFiltersPanel);
+  };
 
   return (
-    <Container
-      maxWidth="xl"
-      sx={{
-        marginBottom: 3,
-        marginTop: 3,
-      }}
-    >
-      <Stack>
-        <Paper>
-          <DataGrid
-            rows={experiments || []}
-            // CUSTOMIZE: data source unique ID field
-            getRowId={(row) => row.id}
-            columns={columns}
-            // CUSTOMIZE: initial sort field
-            initialState={{
-              sorting: {
-                sortModel: [{ field: 'start_time', sort: 'desc' }],
-              },
-            }}
-            onRowClick={() => navigate({ to: '/monitor-activities/detail' })}
-            disableColumnSelector
-            disableRowSelectionOnClick
-          />
-        </Paper>
-      </Stack>
-    </Container>
+    <FilterContext>
+      <Box>
+        <PageHeader
+          pageTitle="Monitor Activities"
+          description="View and filter experiment activities"
+          sx={{
+            marginBottom: 1,
+            padding: 2,
+          }}
+        />
+        <Box>
+          <Stack direction="row">
+            {showFiltersPanel && (
+              <Box
+                sx={{
+                  width: '350px',
+                }}
+              >
+                <FiltersPanel
+                  filterConfigs={filterConfigs}
+                  onClose={handleCloseFilters}
+                />
+              </Box>
+            )}
+            <Paper
+              elevation={0}
+              sx={{
+                flex: 1,
+                minHeight: '600px',
+                minWidth: 0,
+              }}
+            >
+              <ActivityViewHeader
+                searchTerm={searchTerm}
+                setSearchTerm={setSearchTerm}
+                onToggleFiltersPanel={handleToggleFilters}
+              />
+              <ActivityView
+                filterConfigs={filterConfigs}
+                searchTerm={searchTerm}
+              />
+            </Paper>
+          </Stack>
+        </Box>
+      </Box>
+    </FilterContext>
   );
 }
