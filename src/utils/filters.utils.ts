@@ -1,13 +1,34 @@
 import dayjs from 'dayjs';
 import { DataFilter, FilterConfig } from '../types/filters.types';
 
-export const filterBySearchText = (allData: any[], searchText?: string) => {
+export const filterBySearchText = (
+  allData: any[],
+  searchText?: string,
+  searchMode: 'text' | 'regex' = 'text'
+) => {
   let filteredData = allData;
   if (searchText) {
-    filteredData = allData.filter((d) => {
-      const rowString = JSON.stringify(d).toLowerCase();
-      return rowString.indexOf(searchText.toLowerCase()) > -1;
-    });
+    if (searchMode === 'regex') {
+      try {
+        // Create regex with case-insensitive flag
+        const regex = new RegExp(searchText, 'i');
+        filteredData = allData.filter((d) => {
+          const rowString = JSON.stringify(d);
+          return regex.test(rowString);
+        });
+      } catch (error) {
+        // If regex is invalid, return all data (no filtering)
+        // This prevents crashes from malformed regex patterns
+        // console.warn('Invalid regex pattern:', searchText, error);
+        return allData;
+      }
+    } else {
+      // Text search mode (default)
+      filteredData = allData.filter((d) => {
+        const rowString = JSON.stringify(d).toLowerCase();
+        return rowString.indexOf(searchText.toLowerCase()) > -1;
+      });
+    }
   }
   return filteredData;
 };
@@ -137,9 +158,10 @@ export const filterData = (
   allData: any[],
   filters: DataFilter[],
   filterConfigs: FilterConfig[],
-  searchText?: string
+  searchText?: string,
+  searchMode: 'text' | 'regex' = 'text'
 ) => {
-  const filteredByText = filterBySearchText(allData, searchText);
+  const filteredByText = filterBySearchText(allData, searchText, searchMode);
   const filteredByTextAndDataFilters = filterByDataFilters(
     filteredByText,
     filters,

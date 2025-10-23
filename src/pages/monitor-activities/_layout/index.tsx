@@ -5,9 +5,15 @@ import {
   Paper,
   Stack,
   TextField,
+  ToggleButton,
+  ToggleButtonGroup,
   Typography,
 } from '@mui/material';
 import HomeIcon from '@mui/icons-material/Home';
+import TextFieldsIcon from '@mui/icons-material/TextFields';
+import CodeIcon from '@mui/icons-material/Code';
+import GroupsIcon from '@mui/icons-material/Groups';
+import PersonIcon from '@mui/icons-material/Person';
 import { createFileRoute } from '@tanstack/react-router';
 import { useState } from 'react';
 import { FilterContext } from '../../../components/FilterContext';
@@ -90,6 +96,8 @@ const filterConfigs: FilterConfig[] = [
  */
 function ActivityList() {
   const [searchTerm, setSearchTerm] = useState('');
+  const [searchMode, setSearchMode] = useState<'text' | 'regex'>('text');
+  const [showMyRuns, setShowMyRuns] = useState<boolean>(false);
 
   return (
     <FilterContext>
@@ -127,14 +135,52 @@ function ActivityList() {
               </Link>
               <Typography color="text.primary">Monitor Activities</Typography>
             </Breadcrumbs>
-            <TextField
-              variant="outlined"
-              label="Search"
-              size="small"
-              value={searchTerm}
-              onChange={(evt) => setSearchTerm(evt.target.value)}
-              sx={{ minWidth: 250 }}
-            />
+            <Stack direction="row" spacing={1} alignItems="center">
+              <TextField
+                variant="outlined"
+                label="Search"
+                size="small"
+                value={searchTerm}
+                onChange={(evt) => setSearchTerm(evt.target.value)}
+                sx={{ minWidth: 250 }}
+              />
+              <ToggleButtonGroup
+                value={searchMode}
+                exclusive
+                onChange={(_, newMode) => {
+                  if (newMode !== null) {
+                    setSearchMode(newMode);
+                  }
+                }}
+                size="small"
+                aria-label="search mode"
+              >
+                <ToggleButton value="text" aria-label="text search">
+                  <TextFieldsIcon fontSize="small" />
+                </ToggleButton>
+                <ToggleButton value="regex" aria-label="regex search">
+                  <CodeIcon fontSize="small" />
+                </ToggleButton>
+              </ToggleButtonGroup>
+              <ToggleButtonGroup
+                value={showMyRuns ? 'mine' : 'all'}
+                exclusive
+                onChange={(_, newValue) => {
+                  if (newValue !== null) {
+                    setShowMyRuns(newValue === 'mine');
+                  }
+                }}
+                size="small"
+                aria-label="user filter"
+              >
+                <ToggleButton value="all" aria-label="all runs">
+                  <GroupsIcon fontSize="small" />
+                </ToggleButton>
+                <ToggleButton value="mine" aria-label="my runs">
+                  <PersonIcon fontSize="small" />
+                </ToggleButton>
+              </ToggleButtonGroup>
+            </Stack>
           </Box>
 
           {/* Main Content Area */}
@@ -154,6 +200,8 @@ function ActivityList() {
               <ActivityView
                 filterConfigs={filterConfigs}
                 searchTerm={searchTerm}
+                searchMode={searchMode}
+                showMyRuns={showMyRuns}
               />
             </Box>
           </Paper>

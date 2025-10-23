@@ -11,6 +11,7 @@ import { FilterConfig } from '../../../types/filters.types';
 interface ActivityViewProps {
   filterConfigs: FilterConfig[];
   searchTerm: string;
+  searchMode: 'text' | 'regex';
 }
 
 const dateComparator: GridComparatorFn<string> = (v1, v2) => {
@@ -69,6 +70,7 @@ const columns: GridColDef[] = [
 export const ActivityView: React.FC<ActivityViewProps> = ({
   filterConfigs,
   searchTerm,
+  searchMode,
 }) => {
   const { activeFilters } = useFilters();
   const navigate = useNavigate();
@@ -112,7 +114,8 @@ export const ActivityView: React.FC<ActivityViewProps> = ({
     experiments,
     activeFilters,
     filterConfigs,
-    searchTerm
+    searchTerm,
+    searchMode
   );
 
   return (
