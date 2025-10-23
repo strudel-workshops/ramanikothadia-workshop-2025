@@ -1,1 +1,0 @@
-import{j as l,B as m,K as a}from"./index-BwI74Y1v.js";const h=({height:t,width:s,sx:r,children:o,...i})=>l.jsx(m,{...i,sx:{...r,height:t||"auto",overflow:"hidden",width:s||"auto"},children:a.Children.map(o,e=>{if(a.isValidElement(e)){const n=s?"relative-width":"relative-height";return a.cloneElement(e,{className:`${e.props.className} ${n}`})}})});export{h as I};
