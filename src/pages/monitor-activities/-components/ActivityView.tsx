@@ -12,6 +12,8 @@ interface ActivityViewProps {
   filterConfigs: FilterConfig[];
   searchTerm: string;
   searchMode: 'text' | 'regex';
+  showMyRuns?: boolean;
+  onFilteredDataChange?: (data: any[]) => void;
 }
 
 const dateComparator: GridComparatorFn<string> = (v1, v2) => {
@@ -71,6 +73,8 @@ export const ActivityView: React.FC<ActivityViewProps> = ({
   filterConfigs,
   searchTerm,
   searchMode,
+  showMyRuns = false,
+  onFilteredDataChange,
 }) => {
   const { activeFilters } = useFilters();
   const navigate = useNavigate();
@@ -92,6 +96,43 @@ export const ActivityView: React.FC<ActivityViewProps> = ({
     }));
   }, [rawData]);
 
+  // Apply filters and search to the data (only if data is loaded)
+  const filteredData = React.useMemo(() => {
+    if (!experiments) return [];
+
+    let filtered = filterData(
+      experiments,
+      activeFilters,
+      filterConfigs,
+      searchTerm,
+      searchMode
+    );
+
+    // Filter by user if "My Runs" is selected
+    if (showMyRuns) {
+      // For now, we'll assume the current user can be identified
+      // In a real app, this would come from auth context
+      filtered = filtered.filter((item) => item.user === 'current_user');
+    }
+
+    return filtered;
+  }, [
+    experiments,
+    activeFilters,
+    filterConfigs,
+    searchTerm,
+    searchMode,
+    showMyRuns,
+  ]);
+
+  // Notify parent of filtered data changes
+  // This hook must be called on every render, before any conditional returns
+  React.useEffect(() => {
+    if (onFilteredDataChange && filteredData.length > 0) {
+      onFilteredDataChange(filteredData);
+    }
+  }, [filteredData, onFilteredDataChange]);
+
   // Show loading skeleton while data is loading
   if (!experiments) {
     const emptyRows = new Array(10).fill(null);
@@ -108,15 +149,6 @@ export const ActivityView: React.FC<ActivityViewProps> = ({
       </Box>
     );
   }
-
-  // Apply filters and search to the data
-  const filteredData = filterData(
-    experiments,
-    activeFilters,
-    filterConfigs,
-    searchTerm,
-    searchMode
-  );
 
   return (
     <>
